@@ -9,22 +9,16 @@ description: |
 author: Julia Vassiliki <julia.vassiliki@unsw.edu.au>
 
 inputs:
-  arch:
-    description: Comma separated list of architectures to filter test configs on.
+  manifest_repo:
+    description: Manifest repository
+    required: true
+  manifest:
+    description: Manifest file
+    default: master.xml
     required: false
-  march:
-    description: Comma separated list of march flags to filter test configs on.
-    required: false
-  mode:
-    description: Comma separated list of modes (32/64) to filter test configs on.
-    required: false
-  compiler:
-    description: One of `{gcc, clang} to filter test configs on`
-    required: false
-  debug:
-    description: |
-      Comma separated list of debug levels from `{debug, release, verification}`
-      to filter test configs on.
+  manifest_branch:
+    description: Manifest repo branch
+    default: master
     required: false
   sha:
     description: git sha to test
