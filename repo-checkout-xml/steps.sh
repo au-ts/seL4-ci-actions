@@ -41,12 +41,12 @@ pushd .repo_manifest
     git commit -m "init"
 popd
 
-$REPO init -u "file://${MANIFEST_GIT}/"
+repo init -u "file://${MANIFEST_GIT}/"
 
-$REPO sync -j 4
+repo sync -j 4
 
 # fetch tags
-$REPO forall -c git fetch --tags
+repo forall -c git fetch --tags
 
 repo-util hashes
 
