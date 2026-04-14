@@ -39,9 +39,6 @@ inputs:
 
 runs:
   using: "composite"
-  defaults:
-    run:
-      working-directory: ./microkit
   steps:
     - name: Checkout code
       run: ${{ github.action_path }}/checkout.sh
@@ -51,11 +48,14 @@ runs:
     - name: Get Nix dependencies
       run: nix develop -c bash -c 'echo Hello World'
       shell: bash
+      working-directory: ./microkit
 
     - name: Set version
       run: echo "SDK_VERSION=$(./microkit/ci/sdk_version.sh)" >> $GITHUB_ENV
       shell: bash
+      working-directory: ./microkit
 
     - name: Build SDK
       run: nix develop --ignore-environment -c bash -c "python3 build_sdk.py --sel4=seL4 --version ${{ env.SDK_VERSION }} --gcc-toolchain-prefix-x86_64 x86_64-elf --gcc-toolchain-prefix-riscv64 riscv64-none-elf --release-packaging --boards qemu_virt_aarch64,maaxboard"
       shell: bash
+      working-directory: ./microkit
