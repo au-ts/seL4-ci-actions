@@ -37,7 +37,7 @@ pushd .repo_manifest
     MANIFEST_GIT=$(pwd)
     git init --quiet
     echo "${INPUT_XML}" | nl-unescape.sh > default.xml
-    git add default.TEST_XML
+    git add default.xml
     git commit -m "init"
 popd
 
