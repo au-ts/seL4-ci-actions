@@ -10,7 +10,7 @@ Expects seL4-platforms/ to be co-located or otherwise in the PYTHONPATH.
 Expects TEST_CASES environment variable to be a JSON.
 """
 
-from builds import Build, run_build_script, run_builds, filtered
+from builds import Build, run_build_script, run_builds, filtered, get_env_filters
 from builds import release_mq_locks, SKIP
 from platforms import Platform
 
