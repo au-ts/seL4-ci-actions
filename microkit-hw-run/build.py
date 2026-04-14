@@ -55,10 +55,8 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[Build]:
     env_filters = get_env_filters()
 
     DEFAULTS = {
-        "success": "Test",
+        "success": "<TODO>",
     }
-
-    [Build(b, DEFAULTS) for b in yml_builds]
 
     builds = []
     for test_case in test_cases:
