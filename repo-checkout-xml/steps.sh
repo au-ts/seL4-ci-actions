@@ -22,9 +22,6 @@ echo "::endgroup::"
 echo "::group::Repo checkout"
 
 # modification of repo-checkout that looks normal
-
-: ${REPO:="repo"}
-
 # repo expects git to be set up; provide defaults if they don't exist
 git config user.name > /dev/null || \
   git config --global user.name "repo"
@@ -34,9 +31,17 @@ git config color.ui > /dev/null || \
   git config --global color.ui false
 
 echo "Using supplied manifest XML"
-TEST_XML="the-test.xml"
-echo "${INPUT_XML}" | nl-unescape.sh > ".repo/manifests/${TEST_XML}"
-$REPO init -m "${TEST_XML}"
+
+mkdir .repo_manifest
+pushd .repo_manifest
+    MANIFEST_GIT=$(pwd)
+    git init --quiet
+    echo "${INPUT_XML}" | nl-unescape.sh > default.xml
+    git add default.TEST_XML
+    git commit -m "init"
+popd
+
+$REPO init -u "file://${MANIFEST_GIT}/"
 
 $REPO sync -j 4
 
