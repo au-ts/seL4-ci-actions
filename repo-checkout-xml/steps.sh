@@ -6,15 +6,8 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
-# Script used for microkit-hw composite action
-
 set -e
 
-if [ ! -n "${INPUT_XML}" ];
-then
-  echo "Invalid use: no supplied XML" >&2
-  exit 1
-fi
+# uses INPUT_XML
 checkout-manifest.sh
-
 fetch-branches.sh

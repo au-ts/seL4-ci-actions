@@ -1,0 +1,25 @@
+# Copyright 2021, Proofcraft Pty Ltd
+# Copyright 2026, UNSW
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
+name: 'Repo checkout XML'
+description: |
+  Checkout repositories from manifest XML from earlier 'Freeze code'
+author: Julia Vassiliki <julia.vassiliki@unsw.edu.au>
+
+inputs:
+  xml:
+    description: microkit xml manifest to test
+    required: true
+  action_name:
+    description: 'internal -- do not use'
+    required: false
+    default: 'repo-checkout-xml'
+
+# GitHub is absolutely annoying and you cannot use `INPUT_***` in composite
+# actions. So we have use either Docker or node
+# js/index.js then runs steps.sh
+runs:
+  using: 'node24'
+  main: '../js/index.js'
