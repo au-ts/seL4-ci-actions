@@ -1,0 +1,56 @@
+# Copyright 2021, Proofcraft Pty Ltd
+# Copyright 2026, UNSW
+#
+# SPDX-License-Identifier: BSD-2-Clause
+
+name: 'microkit/Hardware Builds'
+description: |
+  Runs microkit builds for all platforms.
+author: Julia Vassiliki <julia.vassiliki@unsw.edu.au>
+
+inputs:
+  arch:
+    description: Comma separated list of architectures to filter test configs on.
+    required: false
+  march:
+    description: Comma separated list of march flags to filter test configs on.
+    required: false
+  mode:
+    description: Comma separated list of modes (32/64) to filter test configs on.
+    required: false
+  compiler:
+    description: One of `{gcc, clang} to filter test configs on`
+    required: false
+  debug:
+    description: |
+      Comma separated list of debug levels from `{debug, release, verification}`
+      to filter test configs on.
+    required: false
+  sha:
+    description: git sha to test
+    required: false
+  xml:
+    description: microkit xml manifest to test
+    required: true
+  action_name:
+    description: 'internal -- do not use'
+    required: false
+    default: 'microkit-hw'
+
+runs:
+  using: "composite"
+  defaults:
+    run:
+      working-directory: ./microkit
+  steps:
+    - name: Checkout code
+      run: ${{ github.action_path }}/checkout.sh
+      shell: bash
+      working-directory: ./.
+
+    - name: Get Nix dependencies
+      run: nix develop -c bash -c 'echo Hello World'
+    - name: Set version
+      run: echo "SDK_VERSION=$(./microkit/ci/sdk_version.sh)" >> $GITHUB_ENV
+    - name: Build SDK
+      run: nix develop --ignore-environment -c bash -c "python3 build_sdk.py --sel4=seL4 --version ${{ env.SDK_VERSION }} --gcc-toolchain-prefix-x86_64 x86_64-elf --gcc-toolchain-prefix-riscv64 riscv64-none-elf --release-packaging --boards qemu_virt_aarch64,maaxboard"
