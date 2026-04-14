@@ -10,8 +10,6 @@
 
 set -e
 
-env
-
 if [ ! -n "${INPUT_XML}" ];
 then
   echo "Invalid use: no supplied XML" >&2
