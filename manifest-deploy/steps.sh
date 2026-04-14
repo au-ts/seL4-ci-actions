@@ -30,7 +30,7 @@ sudo apt-get install -qq doxygen
 echo "::endgroup::"
 
 echo "::group::Repo checkout"
-if [[ "$INPUT_MANIFEST_REPO" =~ "\/" ]]; then
+if [[ "$INPUT_MANIFEST_REPO" =~ "/" ]]; then
   export MANIFEST_URL="ssh://git@github.com/${INPUT_MANIFEST_REPO}.git"
 else
   export MANIFEST_URL="ssh://git@github.com/seL4/${INPUT_MANIFEST_REPO}.git"
