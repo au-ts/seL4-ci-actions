@@ -14,6 +14,11 @@ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 chmod a+x ~/bin/repo
 PATH=~/bin:$PATH
 
+if [ -n "${INPUT_USE_VENV}" ]; then
+  python3 -m venv .venv
+  source .venv/bin/activate
+fi
+
 pip3 install -U PyGithub
 
 echo "::endgroup::"
