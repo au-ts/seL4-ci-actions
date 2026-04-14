@@ -50,7 +50,7 @@ def hw_test_filter(build: Build) -> bool:
 
 
 def load_builds_microkit(filter_fun=lambda x: True) -> List[Build]:
-    test_cases: list[dict] = os.environ["TEST_CASES"]
+    test_cases: list[dict] = json.loads(os.environ["TEST_CASES"])
 
     env_filters = get_env_filters()
 
