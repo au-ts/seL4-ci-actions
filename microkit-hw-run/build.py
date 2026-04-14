@@ -61,7 +61,7 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[Build]:
     [Build(b, DEFAULTS) for b in yml_builds]
 
     builds = []
-    for test_case in tests_cases:
+    for test_case in test_cases:
         platform = test_case["platform"]
         config = test_case["config"]
         march = test_case["march"]
