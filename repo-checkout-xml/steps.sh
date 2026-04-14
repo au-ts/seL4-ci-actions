@@ -40,6 +40,9 @@ $REPO init -m "${TEST_XML}"
 
 $REPO sync -j 4
 
+# fetch tags
+$REPO forall -c git fetch --tags
+
 repo-util hashes
 
 echo "::endgroup::"
