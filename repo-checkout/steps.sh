@@ -14,7 +14,7 @@ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 chmod a+x ~/bin/repo
 PATH=~/bin:$PATH
 
-if [ "${INPUT_USE_VENV}" == "1" ]; then
+if [ true ]; then
   python3 -m venv .venv
   source .venv/bin/activate
 fi
