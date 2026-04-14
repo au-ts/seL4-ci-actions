@@ -15,6 +15,10 @@ inputs:
   manifest_repo:
     description: the manifest repository to deploy to
     required: false
+  manifest_branch:
+    description: Manifest repo branch
+    default: master
+    required: false
   action_name:
     description: 'internal -- do not use'
     required: false

@@ -21,7 +21,12 @@ echo "::endgroup::"
 echo "::group::Repo checkout"
 
 export REPO_MANIFEST="${INPUT_MANIFEST}"
-export MANIFEST_URL="https://github.com/seL4/${INPUT_MANIFEST_REPO}"
+export REPO_BRANCH="${INPUT_MANIFEST_BRANCH}"
+if [[ "$INPUT_MANIFEST_REPO" =~ "\/" ]]; then
+  export MANIFEST_URL="https://github.com/${INPUT_MANIFEST_REPO}"
+else
+  export MANIFEST_URL="https://github.com/seL4/${INPUT_MANIFEST_REPO}"
+fi
 checkout-manifest.sh
 
 fetch-branches.sh
