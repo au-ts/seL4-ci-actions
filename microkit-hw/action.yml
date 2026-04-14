@@ -38,6 +38,16 @@ runs:
       run: ${{ github.action_path }}/checkout.sh
       shell: bash
       working-directory: ./.
+      # GitHub is absolutely annoying and you cannot use `INPUT_***` in composite
+      # actions. So we have to emulate it...
+      # https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax#example-specifying-inputs
+      env:
+        INPUT_MANIFEST_REPO: ${{ inputs.manifest_repo }}
+        INPUT_MANIFEST: ${{ inputs.manifest }}
+        INPUT_MANIFEST_BRANCH: ${{ inputs.manifest_branch }}
+        INPUT_XML: ${{ inputs.xml }}
+        INPUT_ACTION_NAME: ${{ inputs.action_name }}
+        INPUT_SHA: ${{ inputs.sha }}
 
     - name: Get Nix dependencies
       run: nix develop -c bash -c 'echo Hello World'
