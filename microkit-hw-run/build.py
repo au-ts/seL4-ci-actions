@@ -37,8 +37,8 @@ class MicrokitRun(Run):
         microkit_config = build.microkit_config
 
         build_commands = [
-            ["tree"],
-            ["mkdir", "-p", BUILD_DIR],
+            ["tree ../../"],
+            ["mkdir", "-p", BUILD_DIR.as_posix()],
             [
                 "make",
                 "-C",
