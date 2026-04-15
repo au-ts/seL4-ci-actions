@@ -32,7 +32,7 @@ class MicrokitRun(Run):
         os.listdir(".")
 
         BUILD_DIR = Path.cwd() / "builds" / build.name
-        MICROKIT_SDK = ""
+        MICROKIT_SDK = Path.cwd() # TODO
         microkit_board = build.microkit_board
         microkit_config = build.microkit_config
 
