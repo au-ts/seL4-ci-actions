@@ -14,6 +14,7 @@ from builds import Build, Run, run_build_script, run_builds, filtered, get_env_f
 from builds import release_mq_locks, SKIP, build_for_platform
 from platforms import Platform
 
+from pathlib import Path
 from pprint import pprint
 from typing import List, Any, Optional
 
@@ -25,21 +26,52 @@ import sys
 
 class MicrokitRun(Run):
     def hw_run(self, log):
+        build = self.build
+
+        import os
+        os.listdir(".")t
+
+        BUILD_DIR = Path.cwd() / "builds" / build.name
+        MICROKIT_SDK = ""
+        microkit_board = build.microkit_board
+        microkit_config = build.microkit_config
+
+        build_commands = [
+            ["tree"],
+            ["mkdir", "-p", BUILD_DIR],
+            [
+                "make",
+                "-C",
+                MICROKIT_SDK / "examples" / "hello",
+                f"BUILD_DIR={BUILD_DIR}",
+                f"MICROKIT_SDK={MICROKIT_SDK}",
+                f"MICROKIT_BOARD={microkit_board}",
+                f"MICROKIT_CONFIG={microkit_config}",
+            ],
+        ]
+
         script, final = super().hw_run(log)
 
         # remove tar command
         assert script[0][0] == "tar"
         script.pop(0)
 
+        # TODO: this should really be done as part of a separate build
+        script.insert(0, build_commands)
+
         return (script, final)
 
 
 class MicrokitBuild(Build):
     def __init__(self, platform: str, config: str, march: str, defaults: dict):
+        platform_up = platform.upper()
+
         super().__init__(
             {
-                f"{platform}_{march}_{config}": {
-                    "platform": platform.upper(),
+                f"{platform_up}_{march}_{config}": {
+                    "platform": platform_up,
+                    "microkit_platform": platform,
+                    "microkit_config": config,
                 }
             },
             defaults,
@@ -88,7 +120,9 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
         config = test_case["config"]
         march = test_case["march"]
 
-        build: Optional[MicrokitBuild] = MicrokitBuild(platform, march, config, DEFAULTS)
+        build: Optional[MicrokitBuild] = MicrokitBuild(
+            platform, march, config, DEFAULTS
+        )
 
         build = build if filter_fun(build) else None
         build = filtered(build, env_filters)
