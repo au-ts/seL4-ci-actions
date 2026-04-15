@@ -104,7 +104,7 @@ def hw_build(manifest_dir: str, build: MicrokitBuild) -> int:
             f"MICROKIT_BOARD={microkit_board}",
             f"MICROKIT_CONFIG={microkit_config}",
         ],
-        [ "cp", "loader.img", f"../{build.name}-loader.img" ],
+        [ "cp", "loader.img", f"../{build.name}.loader.img" ],
     ]
 
     return run_build_script(manifest_dir, build, script)
