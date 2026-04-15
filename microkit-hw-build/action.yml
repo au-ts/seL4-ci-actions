@@ -3,9 +3,9 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
-name: 'microkit/Hardware Runs'
+name: 'microkit/Hardware Builds'
 description: |
-  Does microkit test runs from previously built images for all hardware test platforms.
+  Does microkit hw builds.
 author: Julia Vassiliki <julia.vassiliki@unsw.edu.au>
 
 inputs:
@@ -18,7 +18,7 @@ inputs:
   action_name:
     description: 'internal -- do not use'
     required: false
-    default: 'microkit-hw-run'
+    default: 'microkit-hw-build'
 
 runs:
   using: 'node24'

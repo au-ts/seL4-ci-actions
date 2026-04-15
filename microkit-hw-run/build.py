@@ -28,33 +28,11 @@ class MicrokitRun(Run):
     def hw_run(self, log):
         build = self.build
 
-        BUILD_DIR = build.build_dir
-        MICROKIT_SDK = Path(os.environ["MICROKIT_SDK"])
-        microkit_board = build.microkit_board
-        microkit_config = build.microkit_config
-
-        build_commands = [
-            ["mkdir", "-p", BUILD_DIR.as_posix()],
-            [
-                "make",
-                "-C",
-                (MICROKIT_SDK / "example" / "hello").as_posix(),
-                f"BUILD_DIR={BUILD_DIR}",
-                f"MICROKIT_SDK={MICROKIT_SDK}",
-                f"MICROKIT_BOARD={microkit_board}",
-                f"MICROKIT_CONFIG={microkit_config}",
-            ],
-        ]
-
         script, final = super().hw_run(log)
 
         # remove tar command
         assert script[0][0] == "tar"
         script.pop(0)
-
-        # TODO: this should really be done as part of a separate build
-        for cmd in reversed(build_commands):
-            script.insert(0, cmd)
 
         return (script, final)
 
@@ -75,8 +53,9 @@ class MicrokitBuild(Build):
         )
         self.update_settings()
 
-        self.build_dir = Path(os.environ["GITHUB_WORKSPACE"]) / "builds" / self.name
-        self.files = [ (self.build_dir / "loader.img").as_posix() ]
+        self.files = [
+            Path("{build.name}-loader.img").as_posix()
+        ]
 
     def hw_run(self, log):
         return MicrokitRun(self).hw_run(log)
@@ -106,6 +85,29 @@ def hw_test_filter(build: MicrokitBuild) -> bool:
         return False
 
     return True
+
+
+def hw_build(manifest_dir: str, build: MicrokitBuild) -> int:
+    """Run one hardware build"""
+
+    MICROKIT_SDK = Path(os.environ["MICROKIT_SDK"])
+    BUILD_DIR = Path.cwd()
+    microkit_board = build.microkit_board
+    microkit_config = build.microkit_config
+
+    script = [
+        [
+            "make",
+            "-C", (MICROKIT_SDK / "example" / "hello").as_posix(),
+            f"BUILD_DIR={BUILD_DIR}",
+            f"MICROKIT_SDK={MICROKIT_SDK}",
+            f"MICROKIT_BOARD={microkit_board}",
+            f"MICROKIT_CONFIG={microkit_config}",
+        ],
+        [ "cp", "loader.img", f"../{build.name}-loader.img" ],
+    ]
+
+    return run_build_script(manifest_dir, build, script)
 
 
 def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
@@ -143,5 +145,4 @@ if __name__ == "__main__":
         release_mq_locks(builds)
         sys.exit(0)
 
-    print("unknown action, running hw tests from MICROKIT_SDK")
-    sys.exit(run_builds(builds, hw_run))
+    sys.exit(run_builds(builds, hw_build))
