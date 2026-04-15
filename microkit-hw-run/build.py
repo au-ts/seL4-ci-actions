@@ -28,9 +28,6 @@ class MicrokitRun(Run):
     def hw_run(self, log):
         build = self.build
 
-        import os
-        os.listdir(".")
-
         BUILD_DIR = Path(os.environ["GITHUB_WORKSPACE"]) / "builds" / build.name
         MICROKIT_SDK = Path(os.environ["MICROKIT_SDK"])
         microkit_board = build.microkit_board
@@ -65,12 +62,12 @@ class MicrokitRun(Run):
 
 
 class MicrokitBuild(Build):
-    def __init__(self, board: str, march: str, config: str, defaults: dict):
+    def __init__(self, board: str, config: str, defaults: dict):
         platform = board.upper()
 
         super().__init__(
             {
-                f"{platform}_{march}_{config}": {
+                f"{platform}_{config}": {
                     "platform": platform,
                     "microkit_board": board,
                     "microkit_config": config,
@@ -120,11 +117,8 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
     for test_case in test_cases:
         platform = test_case["platform"]
         config = test_case["config"]
-        march = test_case["march"]
 
-        build: Optional[MicrokitBuild] = MicrokitBuild(
-            platform, march, config, DEFAULTS
-        )
+        build: Optional[MicrokitBuild] = MicrokitBuild(platform, config, DEFAULTS)
 
         build = build if filter_fun(build) else None
         build = filtered(build, env_filters)
