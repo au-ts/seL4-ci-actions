@@ -139,5 +139,5 @@ if __name__ == "__main__":
         release_mq_locks(builds)
         sys.exit(0)
 
-    print("unknown action, running hw builds from MICROKIT_SDK")
+    print("unknown action, running hw tests from MICROKIT_SDK")
     sys.exit(run_builds(builds, hw_run))
