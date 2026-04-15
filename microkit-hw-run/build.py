@@ -38,11 +38,10 @@ class MicrokitRun(Run):
 
         build_commands = [
             ["mkdir", "-p", BUILD_DIR.as_posix()],
-            ["tree",  "../../"],
             [
                 "make",
                 "-C",
-                (MICROKIT_SDK / "examples" / "hello").as_posix(),
+                (MICROKIT_SDK / "example" / "hello").as_posix(),
                 f"BUILD_DIR={BUILD_DIR}",
                 f"MICROKIT_SDK={MICROKIT_SDK}",
                 f"MICROKIT_BOARD={microkit_board}",
