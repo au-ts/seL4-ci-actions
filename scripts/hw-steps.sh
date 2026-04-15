@@ -23,9 +23,9 @@ export PATH="$(pwd)/machine_queue":$PATH
 
 export ACTION_DIR="${SCRIPTS}/.."
 
-# # python env
-# sudo apt-get install -y --no-install-recommends libffi-dev
-# pip3 install --user "junitparser==3.*" sel4-deps
+# python env
+sudo apt-get install -y --no-install-recommends libffi-dev
+pip3 install --user "junitparser==3.*" sel4-deps
 export PYTHONPATH="${ACTION_DIR}/seL4-platforms"
 echo "::endgroup::"
 
