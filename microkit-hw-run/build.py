@@ -65,7 +65,7 @@ class MicrokitRun(Run):
 
 
 class MicrokitBuild(Build):
-    def __init__(self, board: str, config: str, march: str, defaults: dict):
+    def __init__(self, board: str, march: str, config: str, defaults: dict):
         platform = board.upper()
 
         super().__init__(
