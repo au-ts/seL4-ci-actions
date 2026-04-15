@@ -63,14 +63,14 @@ class MicrokitRun(Run):
 
 
 class MicrokitBuild(Build):
-    def __init__(self, platform: str, config: str, march: str, defaults: dict):
-        platform_up = platform.upper()
+    def __init__(self, board: str, config: str, march: str, defaults: dict):
+        platform = board.upper()
 
         super().__init__(
             {
-                f"{platform_up}_{march}_{config}": {
-                    "platform": platform_up,
-                    "microkit_platform": platform,
+                f"{platform}_{march}_{config}": {
+                    "platform": platform,
+                    "microkit_board": board,
                     "microkit_config": config,
                 }
             },
