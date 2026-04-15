@@ -38,7 +38,7 @@ Host tftp.keg.cse.unsw.edu.au
 EOF
 
 if [ -z "${HW_SSH}" ]; then
-  echo "No HW SSH key provided" >&2
+  echo "No 'HW_SSH' key provided" >&2
   exit 1
 fi
 
