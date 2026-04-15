@@ -29,7 +29,7 @@ class MicrokitRun(Run):
         build = self.build
 
         import os
-        os.listdir(".")t
+        os.listdir(".")
 
         BUILD_DIR = Path.cwd() / "builds" / build.name
         MICROKIT_SDK = ""
