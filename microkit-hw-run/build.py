@@ -15,18 +15,24 @@ from builds import release_mq_locks, SKIP, build_for_platform
 from platforms import Platform
 
 from pprint import pprint
-from typing import List
+from typing import List, Any
 
+import copy
 import json
 import os
 import sys
 
-# class MicrokitBuild(Build):
-#     def get_platform(self) -> Platform:
-#         return microkit_platforms
+class MicrokitBuild(Build):
+    def __init__(self, platform: str, defaults):
+        platform = platform.upper()
+        the_build = copy.deepcopy(defaults)
+        the_build["platform"] = platform
+
+        super().__init__({ platform: the_build })
+        self.update_settings()
 
 
-def hw_run(manifest_dir: str, build: Build) -> int:
+def hw_run(manifest_dir: str, build: MicrokitBuild) -> int:
     """Run one hardware test."""
 
     if build.is_disabled():
@@ -40,7 +46,7 @@ def hw_run(manifest_dir: str, build: Build) -> int:
 
 
 
-def hw_test_filter(build: Build) -> bool:
+def hw_test_filter(build: MicrokitBuild) -> bool:
     plat = build.get_platform()
 
     if plat.no_hw_test:
@@ -49,7 +55,7 @@ def hw_test_filter(build: Build) -> bool:
     return True
 
 
-def load_builds_microkit(filter_fun=lambda x: True) -> List[Build]:
+def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
     test_cases: list[dict] = json.loads(os.environ["TEST_CASES"])
 
     env_filters = get_env_filters()
@@ -64,8 +70,8 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[Build]:
         config = test_case["config"]
         march = test_case["march"]
 
-        # build = Build({ "platform" : platform })
-        build = build_for_platform(platform.upper(), DEFAULTS)
+        build = MicrokitBuild(platform, DEFAULTS)
+        # build = build_for_platform(platform.upper(), DEFAULTS)
 
         build = build if filter_fun(build) else None
         build = filtered(build, env_filters)
