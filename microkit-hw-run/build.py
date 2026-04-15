@@ -114,7 +114,7 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
     env_filters = get_env_filters()
 
     DEFAULTS = {
-        "success": "<TODO>",
+        "success": "hello, world",
     }
 
     builds = []
