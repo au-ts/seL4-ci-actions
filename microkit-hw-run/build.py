@@ -76,7 +76,7 @@ class MicrokitBuild(Build):
         self.update_settings()
 
         self.build_dir = Path(os.environ["GITHUB_WORKSPACE"]) / "builds" / self.name
-        self.files = [ self.build_dir / "loader.img" ]
+        self.files = [ (self.build_dir / "loader.img").as_posix() ]
 
     def hw_run(self, log):
         return MicrokitRun(self).hw_run(log)
