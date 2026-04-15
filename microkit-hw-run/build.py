@@ -11,7 +11,7 @@ Expects TEST_CASES environment variable to be a JSON.
 """
 
 from builds import Build, run_build_script, run_builds, filtered, get_env_filters
-from builds import release_mq_locks, SKIP
+from builds import release_mq_locks, SKIP, build_for_platform
 from platforms import Platform
 
 from pprint import pprint
@@ -64,7 +64,8 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[Build]:
         config = test_case["config"]
         march = test_case["march"]
 
-        build = Build({ "platform" : platform })
+        # build = Build({ "platform" : platform })
+        build = build_for_platform(platform.upper(), DEFAULTS)
 
         build = build if filter_fun(build) else None
         build = filtered(build, env_filters)
