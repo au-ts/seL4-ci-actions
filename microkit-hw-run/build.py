@@ -44,6 +44,7 @@ class MicrokitBuild(Build):
             },
             defaults,
         )
+        self.update_settings()
 
     def hw_run(self, log):
         return MicrokitRun(self).hw_run(log)
