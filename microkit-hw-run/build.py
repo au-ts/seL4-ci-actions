@@ -102,7 +102,7 @@ def hw_test_filter(build: MicrokitBuild) -> bool:
     if plat.no_hw_test:
         return False
 
-    if build.microkit_config != "debug":
+    if "debug" not in build.microkit_config:
         return False
 
     return True
