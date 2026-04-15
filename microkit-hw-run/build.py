@@ -42,7 +42,7 @@ class MicrokitRun(Run):
             [
                 "make",
                 "-C",
-                MICROKIT_SDK / "examples" / "hello",
+                (MICROKIT_SDK / "examples" / "hello").as_posix(),
                 f"BUILD_DIR={BUILD_DIR}",
                 f"MICROKIT_SDK={MICROKIT_SDK}",
                 f"MICROKIT_BOARD={microkit_board}",
