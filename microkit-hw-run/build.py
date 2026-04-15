@@ -15,12 +15,13 @@ from builds import release_mq_locks, SKIP, build_for_platform
 from platforms import Platform
 
 from pprint import pprint
-from typing import List, Any
+from typing import List, Any, Optional
 
 import copy
 import json
 import os
 import sys
+
 
 class MicrokitRun(Run):
     def hw_run(self, log):
@@ -32,16 +33,18 @@ class MicrokitRun(Run):
 
         return (script, final)
 
+
 class MicrokitBuild(Build):
-    def __init__(self, platform: str, defaults):
-        platform = platform.upper()
-        the_build = copy.deepcopy(defaults)
-        the_build["platform"] = platform
+    def __init__(self, platform: str, config: str, march: str, defaults: dict):
+        super().__init__(
+            {
+                f"{platform}_{march}_{config}": {
+                    "platform": platform.upper(),
+                }
+            },
+            defaults,
+        )
 
-        super().__init__({ platform: the_build })
-        self.update_settings()
-
-    # create a Run on the fly if we only want one Run per Build
     def hw_run(self, log):
         return MicrokitRun(self).hw_run(log)
 
@@ -55,9 +58,9 @@ def hw_run(manifest_dir: str, build: MicrokitBuild) -> int:
 
     script, final = build.hw_run(f"{build.name}")
 
-    return run_build_script(manifest_dir, build, script, final_script=final, junit=False)
-
-
+    return run_build_script(
+        manifest_dir, build, script, final_script=final, junit=False
+    )
 
 
 def hw_test_filter(build: MicrokitBuild) -> bool:
@@ -84,8 +87,7 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
         config = test_case["config"]
         march = test_case["march"]
 
-        build = MicrokitBuild(platform, DEFAULTS)
-        # build = build_for_platform(platform.upper(), DEFAULTS)
+        build: Optional[MicrokitBuild] = MicrokitBuild(platform, march, config, DEFAULTS)
 
         build = build if filter_fun(build) else None
         build = filtered(build, env_filters)
@@ -96,16 +98,15 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
 
 
 # If called as main, run all builds from builds.yml
-if __name__ == '__main__':
+if __name__ == "__main__":
     builds = load_builds_microkit(filter_fun=hw_test_filter)
 
-    if len(sys.argv) > 1 and sys.argv[1] == '--hw':
+    if len(sys.argv) > 1 and sys.argv[1] == "--hw":
         sys.exit(run_builds(builds, hw_run))
 
-    if len(sys.argv) > 1 and sys.argv[1] == '--post':
+    if len(sys.argv) > 1 and sys.argv[1] == "--post":
         release_mq_locks(builds)
         sys.exit(0)
 
     print("unknown action, running hw builds from MICROKIT_SDK")
     sys.exit(run_builds(builds, hw_run))
-
