@@ -27,10 +27,12 @@ Host *
 
 Host ts
   Hostname login.trustworthy.systems
-  User sel4_ci
+  # User sel4_ci
+  User ts_ci
 
 Host tftp.keg.cse.unsw.edu.au
-  User sel4_ci
+  # User sel4_ci
+  User ts_ci
   ProxyJump ts
 
 EOF
