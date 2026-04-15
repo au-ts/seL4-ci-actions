@@ -56,8 +56,11 @@ class MicrokitRun(Run):
         assert script[0][0] == "tar"
         script.pop(0)
 
+        for cmd in reversed(build_commands):
+            script.insert(0, cmd)
+
         # TODO: this should really be done as part of a separate build
-        script.insert(0, build_commands)
+        # script.insert(0, build_commands)
 
         return (script, final)
 
