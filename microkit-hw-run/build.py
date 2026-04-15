@@ -10,7 +10,7 @@ Expects seL4-platforms/ to be co-located or otherwise in the PYTHONPATH.
 Expects TEST_CASES environment variable to be a JSON.
 """
 
-from builds import Build, run_build_script, run_builds, filtered, get_env_filters
+from builds import Build, Run, run_build_script, run_builds, filtered, get_env_filters
 from builds import release_mq_locks, SKIP, build_for_platform
 from platforms import Platform
 
@@ -22,6 +22,16 @@ import json
 import os
 import sys
 
+class MicrokitRun(Run):
+    def hw_run(self, log):
+        script, final = super().hw_run(log)
+
+        # remove tar command
+        assert script[0][0] == "tar"
+        script.pop(0)
+
+        return (script, final)
+
 class MicrokitBuild(Build):
     def __init__(self, platform: str, defaults):
         platform = platform.upper()
@@ -30,6 +40,10 @@ class MicrokitBuild(Build):
 
         super().__init__({ platform: the_build })
         self.update_settings()
+
+    # create a Run on the fly if we only want one Run per Build
+    def hw_run(self, log):
+        return MicrokitRun(self).hw_run(log)
 
 
 def hw_run(manifest_dir: str, build: MicrokitBuild) -> int:
