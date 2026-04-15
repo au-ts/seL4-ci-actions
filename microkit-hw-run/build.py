@@ -28,7 +28,7 @@ class MicrokitRun(Run):
     def hw_run(self, log):
         build = self.build
 
-        BUILD_DIR = Path(os.environ["GITHUB_WORKSPACE"]) / "builds" / build.name
+        BUILD_DIR = build.build_dir
         MICROKIT_SDK = Path(os.environ["MICROKIT_SDK"])
         microkit_board = build.microkit_board
         microkit_config = build.microkit_config
@@ -52,11 +52,9 @@ class MicrokitRun(Run):
         assert script[0][0] == "tar"
         script.pop(0)
 
+        # TODO: this should really be done as part of a separate build
         for cmd in reversed(build_commands):
             script.insert(0, cmd)
-
-        # TODO: this should really be done as part of a separate build
-        # script.insert(0, build_commands)
 
         return (script, final)
 
@@ -76,6 +74,9 @@ class MicrokitBuild(Build):
             defaults,
         )
         self.update_settings()
+
+        self.build_dir = Path(os.environ["GITHUB_WORKSPACE"]) / "builds" / self.name
+        self.files = [ self.build_dir / "loader.img" ]
 
     def hw_run(self, log):
         return MicrokitRun(self).hw_run(log)
