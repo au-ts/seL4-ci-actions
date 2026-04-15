@@ -31,14 +31,14 @@ class MicrokitRun(Run):
         import os
         os.listdir(".")
 
-        BUILD_DIR = Path.cwd() / "builds" / build.name
-        MICROKIT_SDK = Path.cwd() # TODO
+        BUILD_DIR = Path(os.environ["GITHUB_WORKSPACE"]) / "builds" / build.name
+        MICROKIT_SDK = Path(os.environ["MICROKIT_SDK"])
         microkit_board = build.microkit_board
         microkit_config = build.microkit_config
 
         build_commands = [
-            ["tree",  "../../"],
             ["mkdir", "-p", BUILD_DIR.as_posix()],
+            ["tree",  "../../"],
             [
                 "make",
                 "-C",
