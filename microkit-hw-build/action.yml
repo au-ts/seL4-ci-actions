@@ -23,4 +23,3 @@ inputs:
 runs:
   using: 'node24'
   main: '../js/index.js'
-  post: '../js/post.js'
