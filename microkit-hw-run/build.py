@@ -53,6 +53,10 @@ class MicrokitBuild(Build):
         )
         self.update_settings()
 
+        import os
+        print(os.listdir("."))
+        print(os.listdir(os.environ["GITHUB_WORKSPACE"]))
+
         self.files = [Path(f"{self.name}-loader.img").as_posix()]
 
     def hw_run(self, log):
