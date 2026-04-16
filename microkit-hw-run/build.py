@@ -53,11 +53,12 @@ class MicrokitBuild(Build):
         )
         self.update_settings()
 
-        import os
-        print(os.listdir("."))
-        print(os.listdir(os.environ["GITHUB_WORKSPACE"]))
+        self.files = [self.get_image_path()]
 
-        self.files = [Path(f"{self.name}-loader.img").as_posix()]
+    def get_image_path(self) -> str:
+        return (
+            Path(os.environ["GITHUB_WORKSPACE"]) / f"{self.name}-loader.img"
+        ).as_posix()
 
     def hw_run(self, log):
         return MicrokitRun(self).hw_run(log)
@@ -109,11 +110,7 @@ def hw_build(manifest_dir: str, build: MicrokitBuild) -> int:
             f"MICROKIT_BOARD={microkit_board}",
             f"MICROKIT_CONFIG={microkit_config}",
         ],
-        [
-            "cp",
-            (BUILD_DIR / "loader.img").as_posix(),
-            (GITHUB_WORKSPACE / "{build.name}.loader.img").as_posix(),
-        ],
+        ["cp", (BUILD_DIR / "loader.img").as_posix(), build.get_image_path()],
     ]
 
     return run_build_script(manifest_dir, build, script)
