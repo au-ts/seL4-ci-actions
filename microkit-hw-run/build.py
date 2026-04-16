@@ -53,9 +53,7 @@ class MicrokitBuild(Build):
         )
         self.update_settings()
 
-        self.files = [
-            Path("{build.name}-loader.img").as_posix()
-        ]
+        self.files = [Path("{build.name}-loader.img").as_posix()]
 
     def hw_run(self, log):
         return MicrokitRun(self).hw_run(log)
@@ -91,20 +89,27 @@ def hw_build(manifest_dir: str, build: MicrokitBuild) -> int:
     """Run one hardware build"""
 
     MICROKIT_SDK = Path(os.environ["MICROKIT_SDK"])
-    BUILD_DIR = Path.cwd()
+    GITHUB_WORKSPACE = Path(os.environ["GITHUB_WORKSPACE"])
+    BUILD_DIR = GITHUB_WORKSPACE / "builds" / build.name
     microkit_board = build.microkit_board
     microkit_config = build.microkit_config
 
     script = [
+        ["mkdir", "-p", BUILD_DIR.as_posix()],
         [
             "make",
-            "-C", (MICROKIT_SDK / "example" / "hello").as_posix(),
+            "-C",
+            (MICROKIT_SDK / "example" / "hello").as_posix(),
             f"BUILD_DIR={BUILD_DIR}",
             f"MICROKIT_SDK={MICROKIT_SDK}",
             f"MICROKIT_BOARD={microkit_board}",
             f"MICROKIT_CONFIG={microkit_config}",
         ],
-        [ "cp", "loader.img", f"../{build.name}.loader.img" ],
+        [
+            "cp",
+            (BUILD_DIR / "loader.img").as_posix(),
+            (GITHUB_WORKSPACE / "{build.name}.loader.img").as_posix(),
+        ],
     ]
 
     return run_build_script(manifest_dir, build, script)
