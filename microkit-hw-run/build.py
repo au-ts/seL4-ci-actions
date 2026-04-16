@@ -53,7 +53,7 @@ class MicrokitBuild(Build):
         )
         self.update_settings()
 
-        self.files = [Path("{build.name}-loader.img").as_posix()]
+        self.files = [Path(f"{self.name}-loader.img").as_posix()]
 
     def hw_run(self, log):
         return MicrokitRun(self).hw_run(log)
