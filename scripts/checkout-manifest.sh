@@ -8,6 +8,7 @@
 # Checks out the verification repo manifest in current directory
 
 set -e
+set -x
 
 : ${MANIFEST_URL:="https://github.com/seL4/verification-manifest.git"}
 : ${REPO_DEPTH:=1}
