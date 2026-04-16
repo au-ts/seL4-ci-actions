@@ -57,7 +57,7 @@ class MicrokitBuild(Build):
 
     def get_image_path(self) -> str:
         return (
-            Path(os.environ["GITHUB_WORKSPACE"]) / f"{self.name}-loader.img"
+            Path(os.environ["GITHUB_WORKSPACE"]) / f"{self.name}.loader.img"
         ).as_posix()
 
     def hw_run(self, log):
