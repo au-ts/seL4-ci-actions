@@ -156,7 +156,7 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
 
 # If called as main, run all builds from builds.yml
 if __name__ == "__main__":
-    builds = load_builds_microkit(filter_fun=hw_test_filter)
+    builds = load_builds_microkit(filter_fun=test_filter)
 
     if len(sys.argv) > 1 and sys.argv[1] == "--hw":
         sys.exit(run_builds(builds, hw_run))
