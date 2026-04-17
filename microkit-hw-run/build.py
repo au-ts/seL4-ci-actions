@@ -34,7 +34,7 @@ class MicrokitRun(Run):
         assert script[0][0] == "tar"
         script.pop(0)
 
-        return (script, final)a
+        return (script, final)
 
 
 class MicrokitBuild(Build):
