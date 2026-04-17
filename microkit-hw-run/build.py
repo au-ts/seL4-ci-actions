@@ -46,7 +46,7 @@ class MicrokitBuild(Build):
         else:
             for platform_obj in sel4_platforms.values():
                 # print(f"considering sel4 platform board {platform_obj} for board {board}")
-                if platform_obj.microkit_board == board:
+                if board in platform_obj.microkit_boards:
                     platform = platform_obj.name
                     break
             else:

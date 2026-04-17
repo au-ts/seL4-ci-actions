@@ -74,7 +74,7 @@ platforms:
     no_hw_build: true
     microkit_no_hw_test: true
     microkit_no_hw_build: true
-    microkit_board: qemu_virt_riscv64
+    microkit_boards: qemu_virt_riscv64
 
   RISCVVIRT32:
     arch: riscv
@@ -171,7 +171,7 @@ platforms:
     no_hw_build: true
     microkit_no_hw_test: true
     microkit_no_hw_build: true
-    microkit_board: qemu_virt_aarch64
+    microkit_boards: [qemu_virt_aarch64]
 
   IMX8MQ_EVK:
     arch: arm
@@ -269,7 +269,7 @@ platforms:
     platform: odroidc2
     req: [odroidc2]
     march: armv8a
-    microkit_board: odroidc2
+    microkit_boards: [odroidc2]
 
   ODROID_C4:
     arch: arm
@@ -279,7 +279,7 @@ platforms:
     platform: odroidc4
     req: [odroidc4_1, odroidc4_2]
     march: armv8a
-    microkit_board: odroidc4
+    microkit_boards: [odroidc4]
 
   ODROID_XU:
     arch: arm
@@ -317,7 +317,7 @@ platforms:
     platform: zynqmp
     req: [zcu102_2]
     march: armv8a
-    microkit_board: zcu102
+    microkit_boards: [zcu102]
     # The ZCU102 in machine queue expects a binary image
     # settings:
     # Sel4testAllowSettingsOverride: true
@@ -378,46 +378,7 @@ platforms:
     image_platform: bcm2711
     march: armv8a
     no_hw_test: true
-    microkit_board: rpi4b_1gb
-
-  RPI4_2GB:
-    arch: arm
-    modes: [64]
-    smp: [64]
-    platform: rpi4
-    req: []
-    image_platform: bcm2711
-    march: armv8a
-    no_hw_test: true
-    microkit_no_hw_build: true
-    microkit_no_hw_test: true
-    microkit_board: rpi4b_2gb
-
-  RPI4_4GB:
-    arch: arm
-    modes: [64]
-    smp: [64]
-    platform: rpi4
-    req: []
-    image_platform: bcm2711
-    march: armv8a
-    no_hw_test: true
-    microkit_no_hw_build: true
-    microkit_no_hw_test: true
-    microkit_board: rpi4b_4gb
-
-  RPI4_8GB:
-    arch: arm
-    modes: [64]
-    smp: [64]
-    platform: rpi4
-    req: []
-    image_platform: bcm2711
-    march: armv8a
-    no_hw_test: true
-    microkit_no_hw_build: true
-    microkit_no_hw_test: true
-    microkit_board: rpi4b_8gb
+    microkit_boards: [rpi4b_1gb, rpi4b_2gb, rpi4b_4gb, rpi4b_8gb]
 
   TX1:
     arch: arm
@@ -445,7 +406,7 @@ platforms:
     req: [skylake, haswell3, haswell4, skylake3]
     has_simulation: true
     march: nehalem
-    microkit_board: x86_64_generic
+    microkit_boards: [x86_64_generic, x86_64_generic_vtx]
 
 # platforms where MCS is wholly unsupported
 # (for platforms with partial support see sel4test-hw/build.py and comments below)

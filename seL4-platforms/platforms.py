@@ -59,7 +59,7 @@ class Platform:
         self.no_hw_build = False
         self.microkit_no_hw_test = False
         self.microkit_no_hw_build = False
-        self.microkit_board = None
+        self.microkit_boards = []
         self.settings = {}
         self.__dict__.update(**entries)
         if not self.validate():
@@ -114,7 +114,7 @@ class Platform:
             f"    no_hw_test: {self.no_hw_test}",
             f"    no_hw_build: {self.no_hw_build}",
             f"    microkit_no_hw_test: {self.microkit_no_hw_test}",
-            f"    microkit_board: {self.microkit_board}",
+            f"    microkit_boards: {self.microkit_boards}",
             f"    settings: {self.settings}",
             "  }"
         ]])
