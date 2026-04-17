@@ -708,8 +708,9 @@ def build_for_variant(base_build: Build, variant, filter_fun=lambda x: True) -> 
 
     return build if filter_fun(build) else None
 
+DEFAULT_ENV_FILTER_KEYS = ['march', 'arch', 'mode', 'compiler', 'debug', 'platform', 'name', 'app', 'req']
 
-def get_env_filters() -> list:
+def get_env_filters(keys: list[str] = DEFAULT_ENV_FILTER_KEYS) -> list:
     """Process input env variables and return a build filter (list of dict)"""
 
     def get(var: str) -> Optional[str]:
@@ -718,7 +719,6 @@ def get_env_filters() -> list:
     def to_list(string: str) -> list:
         return [s.strip() for s in string.split(',')]
 
-    keys = ['march', 'arch', 'mode', 'compiler', 'debug', 'platform', 'name', 'app', 'req']
     filter = {k: to_list(get(k)) for k in keys if get(k)}
     # 'mode' expects integers:
     if 'mode' in filter:
@@ -776,6 +776,9 @@ def filtered(build: Build, build_filters: dict) -> Optional[Build]:
                         return False
             elif k in ['name', 'app']:
                 if vars(build).get(k) not in v:
+                    return False
+            elif hasattr(build, k):
+                if getattr(build, k) not in v:
                     return False
             elif not vars(build.get_platform()).get(k):
                 return False

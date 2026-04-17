@@ -135,7 +135,8 @@ def hw_build(manifest_dir: str, build: MicrokitBuild) -> int:
 def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
     test_cases: list[dict] = json.loads(os.environ["TEST_CASES"])
 
-    env_filters = get_env_filters()
+    # keep in sync with action.yml
+    env_filters = get_env_filters(keys=["board"])
 
     DEFAULTS = {
         "success": "hello, world",
@@ -143,10 +144,10 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
 
     builds = []
     for test_case in test_cases:
-        platform = test_case["platform"]
+        board = test_case["board"]
         config = test_case["config"]
 
-        build: Optional[MicrokitBuild] = MicrokitBuild(platform, config, DEFAULTS)
+        build: Optional[MicrokitBuild] = MicrokitBuild(board, config, DEFAULTS)
 
         build = build if filter_fun(build) else None
         build = filtered(build, env_filters)
