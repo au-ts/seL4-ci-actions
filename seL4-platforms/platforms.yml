@@ -254,6 +254,7 @@ platforms:
     platform: odroidc2
     req: [odroidc2]
     march: armv8a
+    microkit_board: odroidc2
 
   ODROID_C4:
     arch: arm
@@ -263,6 +264,7 @@ platforms:
     platform: odroidc4
     req: [odroidc4_1, odroidc4_2]
     march: armv8a
+    microkit_board: odroidc4
 
   ODROID_XU:
     arch: arm
