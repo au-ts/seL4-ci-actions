@@ -63,6 +63,9 @@ platforms:
     march: rv64imac
     no_hw_test: true
     no_hw_build: true
+    microkit_no_hw_test: true
+    microkit_no_hw_build: true
+    microkit_board: qemu_virt_riscv64
 
   RISCVVIRT32:
     arch: riscv
@@ -157,6 +160,9 @@ platforms:
     march: armv8a # Cortex-A53 is emulated by default
     no_hw_test: true
     no_hw_build: true
+    microkit_no_hw_test: true
+    microkit_no_hw_build: true
+    microkit_board: qemu_virt_aarch64
 
   IMX8MQ_EVK:
     arch: arm
