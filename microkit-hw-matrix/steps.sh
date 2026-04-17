@@ -20,5 +20,16 @@ export PYTHONPATH="${ACTION_DIR}/seL4-platforms"
 
 echo "::endgroup::"
 
-# start builds
+pushd microkit
+  python3 build_sdk.py --sel4=../seL4 --matrix=../build_sdk_matrix.json
+
+  export TEST_CASES=$(cat ../build_sdk_matrix.json)
+
+  echo hi \'"${TEST_CASES}"\'
+  cat ../build_sdk_matrix.json
+
+  echo "test_cases=${TEST_CASES}" >> "${GITHUB_OUTPUT}"
+popd
+
+# exports the gh_output
 python3 "${ACTION_DIR}/${INPUT_ACTION_NAME}/build.py" --matrix
