@@ -369,6 +369,7 @@ platforms:
     image_platform: bcm2711
     march: armv8a
     no_hw_test: true
+    microkit_board: rpi4b_1gb
 
   TX1:
     arch: arm
