@@ -200,6 +200,18 @@ platforms:
     no_hw_test: true
     microkit_no_hw_test: true
 
+  # microkit only
+  IMX8MP_IOTGATE:
+    arch: arm
+    modes: [64]
+    smp: [64]
+    platform: imx8mp-iotgate
+    req: [iotgate1,iotgate2,iotgate3,iotgate4]
+    march: armv8a
+    # microkit only
+    no_hw_build: true
+    no_hw_test: true
+
   TQMA8XQP1GB:
     arch: arm
     modes: [64]

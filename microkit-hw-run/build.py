@@ -50,7 +50,9 @@ class MicrokitBuild(Build):
                     platform = platform_obj.name
                     break
             else:
-                raise Exception(f"unknown platforms.yml entry for microkit board '{board}'")
+                raise Exception(
+                    f"unknown platforms.yml entry for microkit board '{board}'"
+                )
 
         super().__init__(
             {
@@ -71,6 +73,10 @@ class MicrokitBuild(Build):
             Path(os.environ["GITHUB_WORKSPACE"]) / f"{self.name}.loader.img"
         ).as_posix()
 
+    def is_disabled(self) -> bool:
+        platform = self.get_platform()
+        return platform.microkit_no_hw_test or ("debug" not in self.microkit_config)
+
     def hw_run(self, log):
         return MicrokitRun(self).hw_run(log)
 
@@ -89,13 +95,10 @@ def hw_run(manifest_dir: str, build: MicrokitBuild) -> int:
     )
 
 
-def hw_test_filter(build: MicrokitBuild) -> bool:
+def test_filter(build: MicrokitBuild) -> bool:
     plat = build.get_platform()
 
-    if plat.microkit_no_hw_test:
-        return False
-
-    if "debug" not in build.microkit_config:
+    if plat.microkit_no_hw_build:
         return False
 
     return True
