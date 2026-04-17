@@ -371,6 +371,45 @@ platforms:
     no_hw_test: true
     microkit_board: rpi4b_1gb
 
+  RPI4_2GB:
+    arch: arm
+    modes: [64]
+    smp: [64]
+    platform: rpi4
+    req: []
+    image_platform: bcm2711
+    march: armv8a
+    no_hw_test: true
+    microkit_no_hw_build: true
+    microkit_no_hw_test: true
+    microkit_board: rpi4b_2gb
+
+  RPI4_4GB:
+    arch: arm
+    modes: [64]
+    smp: [64]
+    platform: rpi4
+    req: []
+    image_platform: bcm2711
+    march: armv8a
+    no_hw_test: true
+    microkit_no_hw_build: true
+    microkit_no_hw_test: true
+    microkit_board: rpi4b_4gb
+
+  RPI4_8GB:
+    arch: arm
+    modes: [64]
+    smp: [64]
+    platform: rpi4
+    req: []
+    image_platform: bcm2711
+    march: armv8a
+    no_hw_test: true
+    microkit_no_hw_build: true
+    microkit_no_hw_test: true
+    microkit_board: rpi4b_8gb
+
   TX1:
     arch: arm
     modes: [64]
