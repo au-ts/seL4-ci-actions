@@ -112,6 +112,8 @@ class Platform:
             f"    req: {self.req}",
             f"    no_hw_test: {self.no_hw_test}",
             f"    no_hw_build: {self.no_hw_build}",
+            f"    microkit_no_hw_test: {self.microkit_no_hw_test}",
+            f"    microkit_board: {self.microkit_board}",
             f"    settings: {self.settings}",
             "  }"
         ]])
