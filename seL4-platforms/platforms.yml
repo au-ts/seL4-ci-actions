@@ -29,6 +29,7 @@ platforms:
     platform: ariane
     march: rv64imac
     no_hw_test: true
+    microkit_no_hw_test: true
 
   CHESHIRE:
     arch: riscv
@@ -36,6 +37,7 @@ platforms:
     platform: cheshire
     march: rv64imac
     no_hw_test: true
+    microkit_no_hw_test: true
 
   SERENGETI:
     arch: riscv
@@ -43,8 +45,9 @@ platforms:
     platform: cheshire
     req: [serengeti1, serengeti2]
     march: rv64imac
+    # microkit hw build/test only
+    no_hw_build: true
     no_hw_test: true
-    # microkit hw test/build
 
   SPIKE32:
     arch: riscv
@@ -133,7 +136,9 @@ platforms:
     platform: rockpro64
     req: [rockpro64a]
     march: armv8a
+    # no board in machine queue
     no_hw_test: true
+    microkit_no_hw_test: true
 
   ROCK3B:
     arch: arm
@@ -143,7 +148,9 @@ platforms:
     platform: rk3568
     req: [rk3568]
     march: armv8a
+    # no board in machine queue
     no_hw_test: true
+    microkit_no_hw_test: true
 
   QUARTZ64:
     arch: arm
