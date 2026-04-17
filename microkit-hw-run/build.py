@@ -143,6 +143,8 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
 
     DEFAULTS = {
         "success": "hello, world",
+        # these should finish quickly
+        "timeout": 120,
     }
 
     builds = []
