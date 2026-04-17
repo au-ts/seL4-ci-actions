@@ -30,9 +30,11 @@ class MicrokitRun(Run):
 
         script, final = super().hw_run(log)
 
-        # remove tar command
-        assert script[0][0] == "tar"
-        script.pop(0)
+        try:
+            if script[0][0] == "tar":
+                script.pop(0)
+        except IndexError:
+            pass
 
         return (script, final)
 
