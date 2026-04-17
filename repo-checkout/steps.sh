@@ -6,7 +6,6 @@
 #
 
 set -e
-set -x
 
 echo "::group::Setting up"
 

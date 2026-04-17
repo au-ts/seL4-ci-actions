@@ -72,6 +72,18 @@ class MicrokitBuild(Build):
         self.update_settings()
 
         self.files = [self.get_image_path()]
+        if march == "x86_64":
+            self.files.insert(
+                0,
+                (
+                    Path(os.environ["MICROKIT_SDK"])
+                    / "board"
+                    / board
+                    / config
+                    / "elf"
+                    / "sel4_32.elf"
+                ).as_posix(),
+            )
 
     def get_image_path(self) -> str:
         return (

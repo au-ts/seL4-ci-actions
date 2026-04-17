@@ -9,7 +9,6 @@
 # Always print repo summary. Needs a repo checkout.
 
 set -e
-set -x
 
 if [ -z "${INPUT_XML}" ]
 then

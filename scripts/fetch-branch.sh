@@ -8,7 +8,6 @@
 # Does nothing if INPUT_XML is set, because that means we have already done this.
 
 set -e
-set -x
 
 if [ -z "${INPUT_XML}" ]
 then
