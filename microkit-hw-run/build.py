@@ -162,7 +162,7 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
 def to_json(builds: List[MicrokitBuild]) -> str:
     """Return a GitHub build matrix per enabled hardware platform as GitHub output assignment."""
 
-    boards = set([(b.microkit_board, b.microkit_march) for b in builds])
+    boards = sorted(set([(b.microkit_board, b.microkit_march) for b in builds]))
     matrix = {
         "include": [{"board": board, "march": march} for (board, march) in boards]
     }
