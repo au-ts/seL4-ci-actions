@@ -12,7 +12,7 @@ Expects TEST_CASES environment variable to be a JSON.
 
 from builds import Build, Run, run_build_script, run_builds, filtered, get_env_filters
 from builds import release_mq_locks, SKIP, build_for_platform
-from platforms import Platform, platforms as sel4_platforms
+from platforms import Platform, platforms as sel4_platforms, gh_output
 
 from pathlib import Path
 from pprint import pprint
@@ -157,13 +157,26 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
     return builds
 
 
+def to_json(builds: List[MicrokitBuild]) -> str:
+    """Return a GitHub build matrix per enabled hardware platform as GitHub output assignment."""
+
+    boards = set([b.microkit_board for b in builds])
+    matrix = {"include": [{ "board": board } for board in boards]}
+
+    return "gh_matrix=" + json.dumps(matrix)
+
+
 # If called as main, run all builds from builds.yml
 if __name__ == "__main__":
     builds = load_builds_microkit(filter_fun=test_filter)
 
-    if len(builds) == 0:
-        print("::warning::Nothing to do")
-        # raise Exception("running a build/test with no active builds")
+    if len(sys.argv) > 1 and sys.argv[1] == '--dump':
+        pprint(builds)
+        sys.exit(0)
+
+    if len(sys.argv) > 1 and sys.argv[1] == '--matrix':
+        gh_output(to_json(builds))
+        sys.exit(0)
 
     if len(sys.argv) > 1 and sys.argv[1] == "--hw":
         sys.exit(run_builds(builds, hw_run))
