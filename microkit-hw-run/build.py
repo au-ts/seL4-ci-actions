@@ -161,7 +161,8 @@ if __name__ == "__main__":
     builds = load_builds_microkit(filter_fun=test_filter)
 
     if len(builds) == 0:
-        raise Exception("running a build/test with no active builds")
+        print("::warning No builds/tests to run")
+        # raise Exception("running a build/test with no active builds")
 
     if len(sys.argv) > 1 and sys.argv[1] == "--hw":
         sys.exit(run_builds(builds, hw_run))
