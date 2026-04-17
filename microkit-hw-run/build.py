@@ -58,6 +58,8 @@ class MicrokitBuild(Build):
             {
                 f"{board_upper}_{config}": {
                     "platform": platform,
+                    # always 64-bit for microkit at this time
+                    "mode": 64,
                     "microkit_board": board,
                     "microkit_config": config,
                 }
