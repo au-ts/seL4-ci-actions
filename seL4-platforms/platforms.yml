@@ -223,7 +223,7 @@ platforms:
     platform: imx8mp-iotgate
     req: [iotgate1,iotgate2,iotgate3,iotgate4]
     march: armv8a
-    # microkit only
+    # microkit only, no seL4
     no_hw_build: true
     no_hw_test: true
 
@@ -234,6 +234,8 @@ platforms:
     platform: tqma8xqp1gb
     req: [tqma]
     march: armv8a
+    # FIXME: Does not work at the moment.
+    microkit_no_hw_build: true
 
   IMX93:
     arch: arm
