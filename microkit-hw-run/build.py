@@ -34,7 +34,7 @@ class MicrokitRun(Run):
         assert script[0][0] == "tar"
         script.pop(0)
 
-        return (script, final)
+        return (script, final)a
 
 
 class MicrokitBuild(Build):
@@ -45,9 +45,10 @@ class MicrokitBuild(Build):
             platform = board_upper
         else:
             for platform_obj in sel4_platforms.values():
-                print(f"considering sel4 platform board {platform_obj} for board {board}")
+                # print(f"considering sel4 platform board {platform_obj} for board {board}")
                 if platform_obj.microkit_board == board:
                     platform = platform_obj.name
+                    break
             else:
                 raise Exception(f"unknown platforms.yml entry for microkit board '{board}'")
 
