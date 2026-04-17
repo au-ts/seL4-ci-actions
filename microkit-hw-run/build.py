@@ -38,7 +38,7 @@ class MicrokitRun(Run):
 
 
 class MicrokitBuild(Build):
-    def __init__(self, board: str, config: str, defaults: dict):
+    def __init__(self, board: str, config: str, march: str, defaults: dict):
         board_upper = board.upper()
 
         if sel4_platforms.get(board_upper):
@@ -62,6 +62,7 @@ class MicrokitBuild(Build):
                     "mode": 64,
                     "microkit_board": board,
                     "microkit_config": config,
+                    "microkit_march": march,
                 }
             },
             defaults,
@@ -160,8 +161,10 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
 def to_json(builds: List[MicrokitBuild]) -> str:
     """Return a GitHub build matrix per enabled hardware platform as GitHub output assignment."""
 
-    boards = set([b.microkit_board for b in builds])
-    matrix = {"include": [{ "board": board } for board in boards]}
+    boards = set([(b.microkit_board, b.microkit_march) for b in builds])
+    matrix = {
+        "include": [{"board": board, "march": march} for (board, march) in boards]
+    }
 
     return "gh_matrix=" + json.dumps(matrix)
 
@@ -170,11 +173,11 @@ def to_json(builds: List[MicrokitBuild]) -> str:
 if __name__ == "__main__":
     builds = load_builds_microkit(filter_fun=test_filter)
 
-    if len(sys.argv) > 1 and sys.argv[1] == '--dump':
+    if len(sys.argv) > 1 and sys.argv[1] == "--dump":
         pprint(builds)
         sys.exit(0)
 
-    if len(sys.argv) > 1 and sys.argv[1] == '--matrix':
+    if len(sys.argv) > 1 and sys.argv[1] == "--matrix":
         gh_output(to_json(builds))
         sys.exit(0)
 
