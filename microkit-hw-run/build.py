@@ -81,7 +81,7 @@ def hw_run(manifest_dir: str, build: MicrokitBuild) -> int:
 def hw_test_filter(build: MicrokitBuild) -> bool:
     plat = build.get_platform()
 
-    if plat.no_hw_test:
+    if plat.microkit_no_hw_test:
         return False
 
     if "debug" not in build.microkit_config:
