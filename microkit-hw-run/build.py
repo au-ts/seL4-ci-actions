@@ -147,8 +147,9 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
     for test_case in test_cases:
         board = test_case["board"]
         config = test_case["config"]
+        march = test_case["march"]
 
-        build: Optional[MicrokitBuild] = MicrokitBuild(board, config, DEFAULTS)
+        build: Optional[MicrokitBuild] = MicrokitBuild(board, config, march, DEFAULTS)
 
         build = build if filter_fun(build) else None
         build = filtered(build, env_filters)
