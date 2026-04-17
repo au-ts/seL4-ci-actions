@@ -134,7 +134,7 @@ def hw_build(manifest_dir: str, build: MicrokitBuild) -> int:
 
 
 def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
-    test_cases: list[dict] = json.loads(os.environ["TEST_CASES"])
+    test_cases: list[dict[str, str]] = json.loads(os.environ["TEST_CASES"])
 
     # keep in sync with action.yml
     env_filters = get_env_filters(keys=["board"])
@@ -155,8 +155,11 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
 
         build: Optional[MicrokitBuild] = MicrokitBuild(board, config, march, DEFAULTS)
 
+        print("filter_fun pre:", build)
         build = build if filter_fun(build) else None
+        print("filter_fun post:", build)
         build = filtered(build, env_filters)
+        print("env_filters post:", build)
         if build:
             builds.append(build)
 
@@ -179,6 +182,9 @@ def to_json(builds: List[MicrokitBuild]) -> str:
 # If called as main, run all builds from builds.yml
 if __name__ == "__main__":
     builds = load_builds_microkit(filter_fun=test_filter)
+
+    if len(builds) == 0:
+        raise Exception("no builds available")
 
     if len(sys.argv) > 1 and sys.argv[1] == "--dump":
         pprint(builds)
