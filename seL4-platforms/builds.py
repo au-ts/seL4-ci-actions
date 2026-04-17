@@ -777,8 +777,8 @@ def filtered(build: Build, build_filters: dict) -> Optional[Build]:
             elif k in ['name', 'app']:
                 if vars(build).get(k) not in v:
                     return False
-            elif hasattr(build, k):
-                if getattr(build, k) not in v:
+            elif vars(build).get(k, None) is not None:
+                if vars(build).get(k) not in v:
                     return False
             elif not vars(build.get_platform()).get(k):
                 return False
