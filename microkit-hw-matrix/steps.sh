@@ -25,9 +25,6 @@ pushd microkit
 
   export TEST_CASES=$(cat ../build_sdk_matrix.json)
 
-  echo hi \'"${TEST_CASES}"\'
-  cat ../build_sdk_matrix.json
-
   echo "test_cases=${TEST_CASES}" >> "${GITHUB_OUTPUT}"
 popd
 
