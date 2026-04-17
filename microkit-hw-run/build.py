@@ -139,13 +139,9 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
     # keep in sync with action.yml
     env_filters = get_env_filters(keys=["board"])
 
-    print(env_filters)
-
     DEFAULTS = {
         "success": "hello, world",
     }
-
-    print("test cases before", test_cases)
 
     builds = []
     for test_case in test_cases:
@@ -155,15 +151,10 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
 
         build: Optional[MicrokitBuild] = MicrokitBuild(board, config, march, DEFAULTS)
 
-        print("filter_fun pre:", build)
         build = build if filter_fun(build) else None
-        print("filter_fun post:", build)
         build = filtered(build, env_filters)
-        print("env_filters post:", build)
         if build:
             builds.append(build)
-
-    print("builds after", builds)
 
     return builds
 
