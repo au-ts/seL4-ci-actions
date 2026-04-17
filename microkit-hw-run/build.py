@@ -12,7 +12,7 @@ Expects TEST_CASES environment variable to be a JSON.
 
 from builds import Build, Run, run_build_script, run_builds, filtered, get_env_filters
 from builds import release_mq_locks, SKIP, build_for_platform
-from platforms import Platform
+from platforms import Platform, platforms as sel4_platforms
 
 from pathlib import Path
 from pprint import pprint
@@ -39,11 +39,20 @@ class MicrokitRun(Run):
 
 class MicrokitBuild(Build):
     def __init__(self, board: str, config: str, defaults: dict):
-        platform = board.upper()
+        board_upper = board.upper()
+
+        if sel4_platforms.get(board_upper):
+            platform = board_upper
+        else:
+            for platform_obj in sel4_platforms.values():
+                if platform_obj.microkit_board == board:
+                    platform = platform_obj.name
+            else:
+                raise Exception(f"unknown platforms.yml entry for microkit board '{board}'")
 
         super().__init__(
             {
-                f"{platform}_{config}": {
+                f"{board_upper}_{config}": {
                     "platform": platform,
                     "microkit_board": board,
                     "microkit_config": config,

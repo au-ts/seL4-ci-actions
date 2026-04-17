@@ -58,6 +58,7 @@ class Platform:
         self.no_hw_test = False
         self.no_hw_build = False
         self.microkit_no_hw_test = False
+        self.microkit_board = None
         self.settings = {}
         self.__dict__.update(**entries)
         if not self.validate():

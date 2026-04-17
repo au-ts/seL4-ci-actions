@@ -281,6 +281,7 @@ platforms:
     # settings:
     # Sel4testAllowSettingsOverride: true
     # ElfloaderImage: "binary"
+    microkit_board: zcu102
 
   KRIA_K26:
     arch: arm
@@ -290,7 +291,6 @@ platforms:
     march: armv8a
     # not in seL4 tooling
     no_hw_build: true
-
     # We don't have any of these physical boards to test against
     microkit_no_hw_test: true
 
