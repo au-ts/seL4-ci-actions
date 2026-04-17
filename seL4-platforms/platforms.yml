@@ -319,6 +319,15 @@ platforms:
     # We don't have any of these physical boards to test against
     microkit_no_hw_test: true
 
+  ULTRA96V2:
+    arch: arm
+    modes: [64]
+    aarch_hyp: [64]
+    platform: zynqmp
+    march: armv8a
+    # We don't have any of these physical boards to test against
+    microkit_no_hw_test: true
+
   ZYNQMP106:
     arch: arm
     modes: [32, 64]
