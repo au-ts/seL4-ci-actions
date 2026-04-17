@@ -37,6 +37,15 @@ platforms:
     march: rv64imac
     no_hw_test: true
 
+  SERENGETI:
+    arch: riscv
+    modes: [64]
+    platform: cheshire
+    req: [serengeti1, serengeti2]
+    march: rv64imac
+    no_hw_test: true
+    # microkit hw test/build
+
   SPIKE32:
     arch: riscv
     modes: [32]
