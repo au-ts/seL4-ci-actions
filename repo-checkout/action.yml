@@ -15,6 +15,10 @@ inputs:
     description: Manifest file
     default: master.xml
     required: false
+  manifest_branch:
+    description: Manifest repo branch
+    default: master
+    required: false
   sha:
     description: |
       override sha to advance PR repo to (e.g. sha for seL4 repo in
