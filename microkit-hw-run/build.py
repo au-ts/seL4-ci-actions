@@ -140,6 +140,7 @@ def hw_build(manifest_dir: str, build: MicrokitBuild) -> int:
             f"MICROKIT_SDK={MICROKIT_SDK}",
             f"MICROKIT_BOARD={microkit_board}",
             f"MICROKIT_CONFIG={microkit_config}",
+            "LLVM=True",
         ],
         ["cp", (BUILD_DIR / "loader.img").as_posix(), build.get_image_path()],
     ]
