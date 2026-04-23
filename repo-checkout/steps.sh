@@ -9,19 +9,28 @@ set -e
 
 echo "::group::Setting up"
 
-mkdir -p ~/bin
-curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-chmod a+x ~/bin/repo
-PATH=~/bin:$PATH
+mkdir -p "${GITHUB_WORKSPACE}/bin"
+curl https://storage.googleapis.com/git-repo-downloads/repo > "${GITHUB_WORKSPACE}/bin/repo"
+chmod a+x "${GITHUB_WORKSPACE}/bin/repo"
+PATH="${GITHUB_WORKSPACE}/bin":$PATH
 
+if [ -z "${VIRTUAL_ENV}" ]; then
+  python3 -m venv "${GITHUB_WORKSPACE}/venv"
+  . "${GITHUB_WORKSPACE}/venv/bin/activate"
+fi
 pip3 install -U PyGithub
 
 echo "::endgroup::"
 
 echo "::group::Repo checkout"
 
+if echo "$INPUT_MANIFEST_REPO" | grep -q "/" 2>/dev/null; then
+  export MANIFEST_URL="https://github.com/${INPUT_MANIFEST_REPO}"
+else
+  export MANIFEST_URL="https://github.com/seL4/${INPUT_MANIFEST_REPO}"
+fi
 export REPO_MANIFEST="${INPUT_MANIFEST}"
-export MANIFEST_URL="https://github.com/seL4/${INPUT_MANIFEST_REPO}"
+export REPO_BRANCH="${INPUT_MANIFEST_BRANCH}"
 checkout-manifest.sh
 
 fetch-branches.sh

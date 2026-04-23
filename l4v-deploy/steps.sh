@@ -8,13 +8,22 @@
 set -e
 
 echo "::group::Setting up"
-mkdir -p ~/bin
-curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-chmod a+x ~/bin/repo
+mkdir -p "${GITHUB_WORKSPACE}/bin"
+curl https://storage.googleapis.com/git-repo-downloads/repo > "${GITHUB_WORKSPACE}/bin/repo"
+chmod a+x "${GITHUB_WORKSPACE}/bin/repo"
 
-PATH=~/bin:"${SCRIPTS}/../l4v-deploy":$PATH
+PATH="${GITHUB_WORKSPACE}/bin":"${SCRIPTS}/../l4v-deploy":$PATH
 
-pip3 install --user lxml
+if [ -z "${VIRTUAL_ENV}" ]; then
+  python3 -m venv "${GITHUB_WORKSPACE}/venv"
+  . "${GITHUB_WORKSPACE}/venv/bin/activate"
+fi
+pip3 install lxml
+
+if [ -z "${GH_SSH}" ]; then
+  echo "No 'GH_SSH' key provided" >&2
+  exit 1
+fi
 
 eval $(ssh-agent)
 ssh-add -q - <<< "${GH_SSH}"

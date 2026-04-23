@@ -27,13 +27,18 @@ Host *
 
 Host ts
   Hostname login.trustworthy.systems
-  User sel4_ci
+  User ts_ci
 
 Host tftp.keg.cse.unsw.edu.au
-  User sel4_ci
+  User ts_ci
   ProxyJump ts
 
 EOF
+
+if [ -z "${HW_SSH}" ]; then
+  echo "No 'HW_SSH' key provided" >&2
+  exit 1
+fi
 
 eval $(ssh-agent)
 ssh-add -q - <<< "${HW_SSH}"

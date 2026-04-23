@@ -9,11 +9,16 @@ set -e
 
 echo "::group::Setting up"
 echo "Installing 'repo'"
-mkdir -p ~/bin
-curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
-chmod a+x ~/bin/repo
+mkdir -p "${GITHUB_WORKSPACE}/bin"
+curl https://storage.googleapis.com/git-repo-downloads/repo > "${GITHUB_WORKSPACE}/bin/repo"
+chmod a+x "${GITHUB_WORKSPACE}/bin/repo"
 
-PATH=~/bin:"${GITHUB_WORKSPACE}/seL4_release":$PATH
+PATH="${GITHUB_WORKSPACE}/bin":"${GITHUB_WORKSPACE}/seL4_release":$PATH
+
+if [ -z "${GH_SSH}" ]; then
+  echo "No 'GH_SSH' key provided" >&2
+  exit 1
+fi
 
 echo "Setting up ssh"
 eval $(ssh-agent)
@@ -23,19 +28,30 @@ echo "Fetching seL4_release repo"
 git clone --depth 1 ssh://git@github.com/seL4/seL4_release
 
 echo "Installing python dependencies"
-pip3 install --user -r ${GITHUB_WORKSPACE}/seL4_release/requirements.txt
+if [ -z "${VIRTUAL_ENV}" ]; then
+  python3 -m venv "${GITHUB_WORKSPACE}/venv"
+  . "${GITHUB_WORKSPACE}/venv/bin/activate"
+fi
+pip3 install -r ${GITHUB_WORKSPACE}/seL4_release/requirements.txt
 
 echo "Install doxygen"
 sudo apt-get install -qq doxygen
 echo "::endgroup::"
 
 echo "::group::Repo checkout"
-export MANIFEST_URL="ssh://git@github.com/seL4/${INPUT_MANIFEST_REPO}.git"
-export REPO_MANIFEST=master.xml
+if echo "$INPUT_MANIFEST_REPO" | grep -q "/" 2>/dev/null; then
+  export MANIFEST_URL="ssh://git@github.com/${INPUT_MANIFEST_REPO}.git"
+else
+  export MANIFEST_URL="ssh://git@github.com/seL4/${INPUT_MANIFEST_REPO}.git"
+fi
+export REPO_BRANCH="${INPUT_MANIFEST_BRANCH}"
+export REPO_MANIFEST="${INPUT_MANIFEST}"
 export REPO_DEPTH=0
 checkout-manifest.sh
 repo-util hashes
 echo "::endgroup::"
+# releaseit always writes to 'default.xml'
+unset REPO_MANIFEST
 
 echo "::group::Deploy"
 releaseit nightly --release

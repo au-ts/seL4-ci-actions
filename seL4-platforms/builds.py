@@ -21,6 +21,7 @@ from junitparser import JUnitXml
 import copy
 import os
 import shutil
+import signal
 import subprocess
 import sys
 
@@ -394,6 +395,7 @@ FAILURE = 0
 SUCCESS = 1
 SKIP = 2
 REPEAT = 3
+INTERRUPTED = 4
 
 # string for detecting ssh failure
 ssh_failure_str = "Unable to ssh to tftp.keg.cse.unsw.edu.au"
@@ -420,7 +422,7 @@ def success_from_bool(success: bool) -> int:
         return FAILURE
 
 
-def run_cmd(cmd, run: Union[Run, Build], prev_output: Optional[str] = None) -> int:
+def run_cmd(cmd, run: Union[Run, Build], prev_output: Optional[str] = None) -> tuple[int, list[str]]:
     """If the command is a List[str], echo + run command with arguments, otherwise
     expect a function, and run that function on the supplied Run plus outputs from
     previous command."""
@@ -430,16 +432,29 @@ def run_cmd(cmd, run: Union[Run, Build], prev_output: Optional[str] = None) -> i
         sys.stdout.flush()
         # Print output as it arrives. Some of the build commands take too long to
         # wait until all output is there. Keep stderr separate, but flush it.
-        process = subprocess.Popen(cmd, text=True, stdout=subprocess.PIPE,
-                                   stderr=sys.stderr, bufsize=1)
+        # Opens in binary mode; the child might end up messing with the pty
+        # so that it is in raw mode and expects \r\n for a newline, so we can't
+        # use the text= option with line buffering and universal newlines.
+        # Python is however helpful and iterating over process.stdout does
+        # a line-at-a-time as we desire, so we just need to decode bytes ourselves.
+        # Disable buffering so we don't hit issues with unflushed output.
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=sys.stderr, bufsize=0)
         lines = []
         for line in process.stdout:
-            line = line.rstrip()
-            lines.append(line)
-            print(line)
+            lines.append(line.decode().rstrip())
+            sys.stdout.buffer.write(line)
             sys.stdout.flush()
             sys.stderr.flush()
         ret = process.wait()
+
+        # Follow the Bash WCE protocol and propagate SIGINT upwards
+        # ... https://www.cons.org/cracauer/sigint.html
+        # A negative value -N indicates the process was terminated by the signal N.
+        if ret < 0 and (-ret) == int(signal.SIGINT):
+            return INTERRUPTED, lines
+        elif ret == 130:
+            # 130 is another return status that is commonly used to mean SIGINT
+            return INTERRUPTED, lines
 
         return success_from_bool(ret == 0), lines
     else:
@@ -544,7 +559,7 @@ def run_build_script(manifest_dir: str,
         result = SUCCESS
         output = None
         for line in script:
-            result, ouput = run_cmd(line, run, output)
+            result, output = run_cmd(line, run, output)
             if result != SUCCESS:
                 break
 
@@ -552,11 +567,13 @@ def run_build_script(manifest_dir: str,
             printc(ANSI_RED, ">>> command failed, aborting.")
         elif result == SKIP:
             printc(ANSI_YELLOW, ">>> skipping this test.")
+        elif result == INTERRUPTED:
+            printc(ANSI_RED, ">>> command interrupted (SIGINT), exiting after cleanup")
 
         # run final script tasks even in case of failure, but not for SKIP
         if result != SKIP:
             for line in final_script:
-                r, output = run_cmd(line, run, ouput)
+                r, output = run_cmd(line, run, output)
                 if r == FAILURE:
                     # If a final script task fails, the overall task fails unless
                     # we have already decided to repeat. In either case we stop
@@ -567,6 +584,10 @@ def run_build_script(manifest_dir: str,
                     # If a final script task repeats, the overall task repeats,
                     # but we continue the final script.
                     result = REPEAT
+                elif r == INTERRUPTED:
+                    # Exited in final state, just immediately die.
+                    printc(ANSI_RED, ">>> cleanup interrupted, exiting immediately")
+                    result = INTERRUPTED
                 # for SKIP and SUCCESS in final script do not change overall result
 
         failures = []
@@ -603,6 +624,8 @@ def run_build_script(manifest_dir: str,
             max_print = 10
             printc(ANSI_RED, "Failed cases: " + ", ".join(failures[:max_print]) +
                    (" ..." if len(failures) > max_print else ""))
+    elif result == INTERRUPTED:
+        raise KeyboardInterrupt("received SIGINT during execution")
     else:
         printc(ANSI_RED, f"{run.name} with REPEAT at end of test, we should not see this.")
     print("")
@@ -709,7 +732,11 @@ def build_for_variant(base_build: Build, variant, filter_fun=lambda x: True) -> 
     return build if filter_fun(build) else None
 
 
-def get_env_filters() -> list:
+DEFAULT_ENV_FILTER_KEYS = ['march', 'arch', 'mode',
+                           'compiler', 'debug', 'platform', 'name', 'app', 'req']
+
+
+def get_env_filters(keys: list[str] = DEFAULT_ENV_FILTER_KEYS) -> list:
     """Process input env variables and return a build filter (list of dict)"""
 
     def get(var: str) -> Optional[str]:
@@ -718,7 +745,6 @@ def get_env_filters() -> list:
     def to_list(string: str) -> list:
         return [s.strip() for s in string.split(',')]
 
-    keys = ['march', 'arch', 'mode', 'compiler', 'debug', 'platform', 'name', 'app', 'req']
     filter = {k: to_list(get(k)) for k in keys if get(k)}
     # 'mode' expects integers:
     if 'mode' in filter:
@@ -776,6 +802,12 @@ def filtered(build: Build, build_filters: dict) -> Optional[Build]:
                         return False
             elif k in ['name', 'app']:
                 if vars(build).get(k) not in v:
+                    return False
+            elif k == 'board':
+                if getattr(build, "microkit_board") not in v:
+                    return False
+            elif k == 'config':
+                if getattr(build, "microkit_config") not in v:
                     return False
             elif not vars(build.get_platform()).get(k):
                 return False
