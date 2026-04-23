@@ -803,8 +803,11 @@ def filtered(build: Build, build_filters: dict) -> Optional[Build]:
             elif k in ['name', 'app']:
                 if vars(build).get(k) not in v:
                     return False
-            elif k in ['board']:
+            elif k == 'board':
                 if getattr(build, "microkit_board") not in v:
+                    return False
+            elif k == 'config':
+                if getattr(build, "microkit_config") not in v:
                     return False
             elif not vars(build.get_platform()).get(k):
                 return False

@@ -12,6 +12,12 @@ inputs:
   board:
     description: Comma separated list of microkit boards to run the test for.
     required: true
+  config:
+    description: Comma separated list of microkit configs (MICROKIT_CONFIG) to run the test for.
+    required: false
+  march:
+    description: Comma separated list of platform marches (from platforms.yml) to run the test for.
+    required: false
   index:
     description: job index in matrix build
     required: true

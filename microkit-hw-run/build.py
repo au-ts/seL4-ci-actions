@@ -151,7 +151,7 @@ def load_builds_microkit(filter_fun=lambda x: True) -> List[MicrokitBuild]:
     test_cases: list[dict[str, str]] = json.loads(os.environ["TEST_CASES"])
 
     # keep in sync with action.yml
-    env_filters = get_env_filters(keys=["board"])
+    env_filters = get_env_filters(keys=["board", "march", "config"])
 
     DEFAULTS = {
         "success": "hello, world",
